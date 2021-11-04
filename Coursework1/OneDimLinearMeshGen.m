@@ -14,7 +14,7 @@ function [mesh] = OneDimLinearMeshGen(xmin,xmax,Ne)
     for i=1:Ne
 
         %set spatial positions of nodes
-        mesh.elem(i).x(1) = xmin + (i-1)*dx;
+        mesh.elem(i).x(1) = xmin + (i-1)*dx; %sets local elements
         mesh.elem(i).x(2) = xmin + i*dx ;
 
         %set global IDs of the nodes

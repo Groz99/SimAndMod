@@ -30,9 +30,7 @@ function [mesh] = OneDimSimpleRefinedMeshGen(xmin,xmax,Ne)
         mesh.elem(i).x(2) = mesh.nvec(mesh.elem(i).n(2));
         %mesh.elem(i).x(1) = xmin + (i-1)*dx;
         %mesh.elem(i).x(2) = xmin + i*dx ;
-
-        
-
+       
         %set element Jacobian based on mapping to standard element
         mesh.elem(i).J = 0.5*(mesh.elem(i).x(2) - mesh.elem(i).x(1)); %this is assuming standard element of -1 to 1
        
