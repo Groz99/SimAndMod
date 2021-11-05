@@ -10,6 +10,7 @@ dcdx = 2;
 % At x = 1
 % At x = 1, must zero last node and then set diagonal to 1
 % Hence, C = 0 in solution vector
+
 c = 0;
 %c = 1;
 
@@ -20,14 +21,14 @@ Lamda = 0; % For this excercise there is no Lamda
 %Create global mesh
 xmin = 0;
 xmax = 1;
-NNodes = 5;
+NNodes = 20;
 
 
 Mesh = OneDimLinearMeshGen(xmin,xmax,NNodes); % Local element number nodes same as global?? ;
 %Size of global mesh effects local element values due to varying J scaling
 
 GMatrix = zeros(NNodes,NNodes);
-SourceVector = zeros(NNodes,1); % Source term is all 0s for laplacian eq.
+SourceVector = zeros(NNodes,1); % Source term is all 0s for poissons eq.
 
 %Form local element matrices as struct
 
@@ -54,7 +55,7 @@ end
 % VN
 % Specifically for dc/dx = 2 at x =0
 % Goes to -2 in source vector i.e. this sets the gradient of the solution
-SourceVector(1) = SourceVector(1) + -dcdx % Need to add for VN 
+SourceVector(1) = SourceVector(1) + -dcdx
 %GMatrix(1) = 1;
 
 % Dirichlet
@@ -62,19 +63,13 @@ SourceVector(1) = SourceVector(1) + -dcdx % Need to add for VN
 GMatrix(end,:) = 0;
 GMatrix(end) = 1;
 
-% FUDGE
-GMatrix(1,:) = 0;
-GMatrix(1,1) = 1;
-
-%Is pre-initialised as 0 but zero for maths clarity
-SourceVector(end) = c; % c is 0 in this case % Need for overwrite for DC
-
-
-
+%Is pre-initialised as 0 but zero for maths 
+SourceVector(end) = 0;
+SourceVector(end) = SourceVector(end) + c; % c is 0 in this case
 
 SolutionVector = GMatrix\SourceVector
 
-x = linspace(xmin,xmax,length(SolutionVector))
+x = linspace(xmin,xmax,length(SourceVector))
 y = SolutionVector
 
 plot(x,y)
