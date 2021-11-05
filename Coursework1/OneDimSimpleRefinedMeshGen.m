@@ -1,5 +1,5 @@
 function [mesh] = OneDimSimpleRefinedMeshGen(xmin,xmax,Ne)
-%%This function generates a one dimensional, equispaced, linear finite
+%%This function generates a one dimensional, non-equispaced, linear finite
 %%element mesh, with Ne number of elements, between the points at x
 %%position xmin and xmax.
 

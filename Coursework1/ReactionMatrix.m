@@ -1,4 +1,4 @@
-function LocalElementmatrix = ReactionMatrix(lamda,eID,msh)
+function LocalElementmatrix = ReactionMatrix(Lamda,eID,msh)
 
 %Elsize = msh.elem(eID).x(2) - msh.elem(eID).x(1); 
 
@@ -6,8 +6,8 @@ function LocalElementmatrix = ReactionMatrix(lamda,eID,msh)
 
 J = msh.elem(eID).J;
 
-LocalElementmatrix = [ (2*lamda*J)/3 (lamda*J)/3  ;
-                       (lamda*J)/3  (2*lamda*J)/3 ];
+LocalElementmatrix = [ (2*Lamda*J)/3 (Lamda*J)/3  ;
+                       (Lamda*J)/3  (2*Lamda*J)/3 ];
              
 
              
