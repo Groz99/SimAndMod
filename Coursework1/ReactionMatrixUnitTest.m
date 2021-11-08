@@ -5,12 +5,12 @@
 % % Test that this matrix is symmetric. This is the same verification as for the
 % diffusion LEM's
 tol = 1e-14;
-Lamda = 2; %diffusion coefficient
-eID=1; %element ID
+Lamda = 2; %Reaction coefficient
+%eID=1; %element ID
+
 msh = OneDimLinearMeshGen(0,1,10);
-
 elemat = ReactionMatrix(Lamda,eID,msh); %THIS IS THE FUNCTION YOU MUST WRITE
-
+SolveLaplace
 assert(abs(elemat(1,2) - elemat(2,1)) <= tol)
 
 %% Test 2: test 2 different elements of the same size produce same matrix
