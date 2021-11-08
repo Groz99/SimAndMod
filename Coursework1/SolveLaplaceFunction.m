@@ -1,44 +1,22 @@
-%SolveLaplace script expressed as a function
-%Defaults to domain of x = 0 to x = 1
+%Function to solve Laplace's equation for given parameters of diffusion and
+%reaction coefficients. As a Laplacian problem the source terms are 0.
+%
+%Takes the following arguments:
+%
+%D - Diffusion Co-efficient (Float)
+%Lamda - Reaction Co-efficient (Float)
+%NNodes - Number of nodes in global mesh (NElements = NNodes - 1) (Int)
+%BC0 - Type of node 0 boundary condition, 'DL' for Dirichlet or 'VN' for Von
+%Nuemman (Str)
+%BC0Val - Value of c or dc/dx for node 0 boundary condition (Float)
+%BC1 - Node 1 boundary condition, same format as BC0
+%BC1Val - Value of c or dx/dx for node 1 boundary condition (Float)
+%
+%The solution is plotted against a known analytical solution for:
+%SolveLaplaceFunction(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
+%Note that the domain is currently hardcoded from x = 0 to x = 1
 
 function [SolutionVector, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
-
-
-
-%{
-%Material parameteres
-D = 1; % D = 1 in this case
-%Lamda = 6;
-Lamda = -9; % For this excercise there is no Lamda
-%Create global mesh
-xmin = 0;
-xmax = 1;
-NNodes = 5;
-
-
-% Set boundary conditions
-
-%VN - Gradient
-%VN at boundary one
-%BC0 = 'VN'
-%BC0Val = 2;
-
-%VN at boundary two
-%BC1 = 'VN'
-%BC1Val = 0;
-
-%Dirichlet - Fixed
-
-% At x = 1
-% At x = 1, must zero last node and then set diagonal to 1
-% Hence, C = 0 in solution vector
-
-BC0 = 'DL'
-BC0Val = 0;
-
-BC1 = 'DL'
-BC1Val = 1;
-%}
 
 %Set domain
 xmin = 0;
@@ -67,18 +45,16 @@ for idx = 1: length(GMatrix) -1
     
 end
 
-
-
+% Need to add source term effect here? 
 %for
     %source terms
 %end
 
-%Enforce BCs, VN first
-%Use switch case to enforce 
-
 
 % I dont think that this structure will cause problems with overwriting 
 % with Dirichlet boundary conditions, can you please confirm this? 
+
+%Enforce boundary conditions at node 0
 switch BC0
     
     case 'VN'
@@ -99,6 +75,7 @@ switch BC0
         
 end
 
+%Enforce boundary conditions at node 1
 switch BC1
     
     case 'VN'
@@ -119,35 +96,22 @@ switch BC1
     
 end
 
-%{
-% VN
-% Specifically for dc/dx = 2 at x =0
-% Goes to -2 in source vector i.e. this sets the gradient of the solution
-SourceVector(1) = SourceVector(1) + -dcdx % Need to add for VN 
-
-
-% Dirichlet
-% Specifically for c = 0 at at x = 1
-GMatrix(end,:) = 0;
-GMatrix(end) = 1;
-SourceVector(end) = c; % c is 0 in this case % Need for overwrite for DC
-%}
-
+%Solve matrix using matlab inbuilt matrix division
 SolutionVector = GMatrix\SourceVector;
 Domain = linspace(xmin,xmax,length(SolutionVector));
 
-
+%Plot FEM solution
 plot(Domain, SolutionVector, 'b')
              
-% Add parameters to plot
+%Add parameters to plot
 
-
-%verify against analytical soln
+%Generate analytical solution to compare with FEM solution
 E = exp(1);
 P = linspace(0,1,100);
 Ce = (E^3)/((E^6)-1) * (E.^(3*P) - E.^(-3*P));
+
+%Plot analytical solution to compare with FEM solution
 hold on
 plot(P,Ce,'r')
-
-    
+   
     
