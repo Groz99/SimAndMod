@@ -11,7 +11,7 @@ BC0Val = 0;
 BC1 = 'DL';
 BC1Val = 1;
 
-[Solution, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
+[Solution, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
 
 assert(abs(Solution(1) - BC0Val)< tol)
 
@@ -27,7 +27,7 @@ BC0Val = 0;
 BC1 = 'DL';
 BC1Val = 1;
 
-[Solution, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
+[Solution, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
 
 assert(abs(Solution(end) - BC1Val)< tol)
 
@@ -45,7 +45,7 @@ BC0Val = 9.4;
 BC1 = 'DL';
 BC1Val = 0;
 
-[Solution, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
+[Solution, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
 
 grad = (Solution(end) - Solution(1))/(Domain(end) - Domain(1));
 
@@ -67,7 +67,7 @@ BC1 = 'DL';
 BC1Val = 1;
 
 %FEM solution
-[Solution, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
+[Solution, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val);
 
 %Analytical solution
 Exp = exp(1);

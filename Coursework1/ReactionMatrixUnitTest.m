@@ -6,11 +6,11 @@
 % diffusion LEM's
 tol = 1e-14;
 Lamda = 2; %Reaction coefficient
-%eID=1; %element ID
+eID=1; %element ID
 
 msh = OneDimLinearMeshGen(0,1,10);
 elemat = ReactionMatrix(Lamda,eID,msh); %THIS IS THE FUNCTION YOU MUST WRITE
-SolveLaplace
+
 assert(abs(elemat(1,2) - elemat(2,1)) <= tol)
 
 %% Test 2: test 2 different elements of the same size produce same matrix
@@ -18,7 +18,7 @@ assert(abs(elemat(1,2) - elemat(2,1)) <= tol)
 % % lectures, the element matrices calculated are the same. This is the 
 %   same verification as for the diffusion LEM's
 tol = 1e-14;
-Lamda = 5; %diffusion coefficient
+Lamda = 5; %Reaction coefficient
 eID=1; %element ID
 msh = OneDimLinearMeshGen(0,1,10);
 
@@ -37,7 +37,7 @@ assert(abs(diffnorm) <= tol)
 % % the element matrix is evaluated correctly. This uses the example shown
 % % from tutorial sheet 3.
 tol = 1e-14;
-Lamda = 9; %reaction coefficient
+Lamda = 9; %Reaction coefficient
 eID=1; %element ID
 msh = OneDimLinearMeshGen(0,1,3);
 
@@ -51,7 +51,7 @@ assert(abs(diffnorm) <= tol)
 %% Test 4: test that different sized elements in a mesh are evaluted correctly - element 1
 % % Test that elements in a non-equally spaced mesh are evaluated correctly
 tol = 1e-14;
-Lamda = 6; %diffusion coefficient
+Lamda = 6; %Reaction coefficient
 eID=1; %element ID
 msh = OneDimSimpleRefinedMeshGen(0,1,5);
 
@@ -65,7 +65,7 @@ assert(abs(diffnorm) <= tol)
 %% Test 5: test that different sized elements in a mesh are evaluted correctly - element 4
 % % Test that elements in a non-equally spaced mesh are evaluated correctly
 tol = 1e-14;
-Lamda = 48; %diffusion coefficient
+Lamda = 48; %Reaction coefficient
 eID=4; %element ID
 msh = OneDimSimpleRefinedMeshGen(0,1,5);
 

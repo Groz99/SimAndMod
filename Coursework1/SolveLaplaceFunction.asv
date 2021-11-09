@@ -14,6 +14,7 @@
 %
 %The solution is plotted against a known analytical solution for:
 %SolveLaplaceFunction(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
+%E.g. 
 %Note that the domain is currently hardcoded from x = 0 to x = 1
 
 function [SolutionVector, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
@@ -45,10 +46,18 @@ for idx = 1: length(GMatrix) -1
     
 end
 
-% Need to add source term effect here? 
-%for
-    %source terms
-%end
+
+%Form source vector - Is there a more efficient method for this? 
+for idx = 1 : length(GMatrix)
+    if idx == 1
+        SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx).J
+    elseif idx == length(GMatrix - 1)
+            SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx-1).J   
+    else
+        SourceVector(idx) = SourceVector(idx) * (Mesh.elem(idx-1).J + Mesh.elem(idx).J)
+    end
+    
+ end
 
 
 % I dont think that this structure will cause problems with overwriting 
@@ -103,16 +112,15 @@ Domain = linspace(xmin,xmax,length(SolutionVector));
 %Plot FEM solution
 plot(Domain, SolutionVector, 'b')
              
-% Add parameters to plot
+%Add parameters to plot
 
-
-%Plot analytical solution to compare with FEM solution
-%verify against analytical soln
+%Generate analytical solution to compare with FEM solution
 E = exp(1);
 P = linspace(0,1,100);
 Ce = (E^3)/((E^6)-1) * (E.^(3*P) - E.^(-3*P));
+
+%Plot analytical solution to compare with FEM solution
 hold on
 plot(P,Ce,'r')
-
-    
+   
     

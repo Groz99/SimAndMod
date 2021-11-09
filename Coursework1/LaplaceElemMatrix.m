@@ -1,17 +1,17 @@
+%Function to calculate the diffusion local element matrix for a given
+%mesh element
+%Takes:
+%D - Diffusion coefficient (int)
+%eID - Element number (int)
+%msh - Mesh data structure, generated using OneDimLinearMeshGen.m or 
+%Or OneDimSimpleRefinedMeshGen.m
+
 function LocalElementmatrix = LaplaceElemMatrix(D,eID,msh)
 
-%formula in terms of J? 
-
-% J = x1-x0/2
-Elsize = msh.elem(eID).x(2) - msh.elem(eID).x(1); 
-
-%Dont think this is needed
+%Extract J from msh structure
 J = msh.elem(eID).J;
 
-%LocalElementmatrix = [ D/Elsize -D/Elsize ;
-%                       -D/Elsize D/Elsize];
-
-%Think this is better
+%Form local element matrix using equation derived in the notes
 LocalElementmatrix = [ D/(2*J) -D/(2*J) ;
                        -D/(2*J) D/(2*J)];
              
