@@ -1,26 +1,3 @@
-<<<<<<< HEAD
-%clear all % Shouldnt need this as all matrices are initialised 
-
-% Set boundary conditions
-
-%VN - Gradient
-
-% At x = 0
-dcdx = 2;
-
-%Dirichlet - Fixed
-% At x = 1
-% At x = 1, must zero last node and then set diagonal to 1
-% Hence, C = 0 in solution vector
-c = 0;
-%c = 1;
-
-%Material parameteres
-D = 1; % D = 1 in this case
-%Lamda = 6;
-Lamda = 0; % For this excercise there is no Lamda
-%Create global mesh
-=======
 %Function to solve Laplace's equation for given parameters of diffusion and
 %reaction coefficients. As a Laplacian problem the source terms are 0.
 %
@@ -36,14 +13,13 @@ Lamda = 0; % For this excercise there is no Lamda
 %BC1Val - Value of c or dx/dx for node 1 boundary condition (Float)
 %
 %The solution is plotted against a known analytical solution for:
-%SolveLaplace(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
-%E.g. SolveLaplace(1,-9,5,'DL',0,'DL',1)
+%SolveLaplaceFunction(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
+%E.g. 
 %Note that the domain is currently hardcoded from x = 0 to x = 1
 
-function [SolutionVector, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
+function [SolutionVector, Domain] = SolveLaplaceFunction(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
 
 %Set domain
->>>>>>> 221b15c6569ff305f9b1fb5bd16610ff905c7155
 xmin = 0;
 xmax = 1;
 
@@ -74,11 +50,11 @@ end
 %Form source vector - Is there a more efficient method for this? 
 for idx = 1 : length(GMatrix)
     if idx == 1
-        SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx).J;
+        SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx).J
     elseif idx == length(GMatrix - 1)
-            SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx-1).J;   
+            SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx-1).J   
     else
-        SourceVector(idx) = SourceVector(idx) * (Mesh.elem(idx-1).J + Mesh.elem(idx).J);
+        SourceVector(idx) = SourceVector(idx) * (Mesh.elem(idx-1).J + Mesh.elem(idx).J)
     end
     
  end
@@ -134,7 +110,7 @@ SolutionVector = GMatrix\SourceVector;
 Domain = linspace(xmin,xmax,length(SolutionVector));
 
 %Plot FEM solution
-plot(Domain, SolutionVector, 'c')
+plot(Domain, SolutionVector, 'b')
              
 %Add parameters to plot
 
@@ -146,3 +122,5 @@ Ce = (E^3)/((E^6)-1) * (E.^(3*P) - E.^(-3*P));
 %Plot analytical solution to compare with FEM solution
 hold on
 plot(P,Ce,'r')
+   
+    
