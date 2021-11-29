@@ -1,4 +1,5 @@
-clear all
+%clear all % Shouldnt need this as all matrices are initialised 
+
 % Set boundary conditions
 
 %VN - Gradient
