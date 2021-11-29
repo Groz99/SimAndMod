@@ -11,26 +11,47 @@
 %BC0Val - Value of c or dc/dx for node 0 boundary condition (Float)
 %BC1 - Node 1 boundary condition, same format as BC0
 %BC1Val - Value of c or dx/dx for node 1 boundary condition (Float)
-%
+%DM - Differencing Method, can take 'CN','FE','BE' (String)
+
+%This is the start of the transient solution and has been extensively
+%modified from SolveLaplace - original function has been retained for
+%legacy verification
+
 %The solution is plotted against a known analytical solution for:
-%SolveLaplace(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
-%E.g. SolveLaplace(1,-9,5,'DL',0,'DL',1)
+%SolveLaplaceTransient(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
+%E.g. SolveLaplaceTransient(1,-9,5,'DL',0,'DL',1,'CN')
 %Note that the domain is currently hardcoded from x = 0 to x = 1
  
-function [SolutionVector, Domain] = SolveLaplace(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val)
+function [SolutionVector, Domain] = SolveLaplaceTransient(D,Lamda,NNodes,BC0,BC0Val,BC1,BC1Val,DM)
  
 %Set domain
 xmin = 0;
 xmax = 1;
  
+%Define theta dependent upon the difference method selected
+if DM == 'CN'
+    theta = 1;
+elseif DM == 'FE'
+    theta = 0;
+elseif DM == 'BE'
+    theta = 0.5;
+
+end
+
 % Initialise mesh
- 
+% NEED: Material coeff, D, Lamda, and Source term
+% NEED: Global Matrix, Global Mass Matrix, Globable Stiffness Matrix and
+% NEED : Ccurrent and CNext
+% Global Matrix
 Mesh = OneDimLinearMeshGen(xmin,xmax,NNodes-1); % Elements will also be N-1 ;
 %Size of global mesh effects local element values due to varying J scaling
  
 GMatrix = zeros(NNodes,NNodes);
 SourceVector = zeros(NNodes,1); % Source term is all 0s for laplacian eq.
-SolutionVecto
+SolutionVector = zeros(NNodes,1); % Need to initialise a solution vector now
+Ccurrent = zeros(NNodes,1);  % Need two solutionvectors, HAVE RETAINED ABOVE DURING DEV.
+Cnext = zeros(NNodes,1);  
+
 %Form local element matrices as struct
  
 for idx = 1: length(GMatrix) -1
@@ -51,7 +72,7 @@ end
 for idx = 1 : length(GMatrix)
     if idx == 1
         SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx).J;
-    elseif idx == length(GMatrix - 1)
+    elseif idx == (length(GMatrix)- 1)
             SourceVector(idx) = SourceVector(idx) * Mesh.elem(idx-1).J;   
     else
         SourceVector(idx) = SourceVector(idx) * (Mesh.elem(idx-1).J + Mesh.elem(idx).J);
@@ -106,7 +127,9 @@ switch BC1
 end
  
 %Solve matrix using matlab inbuilt matrix division
-SolutionVector = GMatrix\SourceVector;
+%Ccurrent = 
+%Cnext = 
+SolutionVector = SolutionVector + GMatrix\SourceVector; % Sum solution with previous timestep data
 Domain = linspace(xmin,xmax,length(SolutionVector));
  
 %Plot FEM solution
