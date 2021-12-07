@@ -18,23 +18,20 @@
 %legacy verification
 
 %The solution is plotted against a known analytical solution for:
-%SolveLaplaceTransient(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
-%E.g. SolveLaplaceTransient(1,-9,5,'DL',0,'DL',1,'CN')
+%SolveLaplaceTransient_GQ(1,-9,4,100,'DL',0,'DL',1,'CN')
+%
 %
 %Note that the domain is currently hardcoded from x = 0 to x = 1
  
-function [Cplot, Domain, TDomain] = SolveLaplaceTransient(D,Lamda,NNodes,NTsteps,BC0,BC0Val,BC1,BC1Val,DM)
+function [Cplot, Domain, TDomain] = SolveLaplaceTransient_GQ(D,Lamda,NElements,NTsteps,BC0,BC0Val,BC1,BC1Val,DM)
  
 %Set domain
 xmin = 0;
 xmax = 1;
- 
 %Set time scheme
 %LET
 tmax = 1;
-%NTsteps = 100;
 dt = tmax/NTsteps;
-%t = 0:dt:tmax;
 
 %Define theta dependent upon the difference method selected
 if DM == 'CN'
@@ -49,19 +46,20 @@ end
 % If lamda, D, mesh etc. are time invariant want a switch case to avoid
 % re-computation when they are constant
 
-%for t = 0:dt:tmax 
-
 % Initialise mesh
 % NEED: Material coeff, D, Lamda, and Source term
 % NEED: Global Matrix, Global Mass Matrix, Globable Stiffness Matrix and
 % NEED : Ccurrent and CNext
 % Global Matrix
-Mesh = OneDimLinearMeshGen(xmin,xmax,NNodes-1); % Elements will also be N-1 ;
+NNodes = 2*NElements + 1;
+Mesh = OneDimLinearMeshGenGQ(xmin,xmax,NElements); % Elements is N-1 ;
 %Size of global mesh effects local element values due to varying J scaling
- 
+
+Mesh = EnhanceMeshData(Mesh,0,1); %DONT NEED THIS HERE.
+
 StiffnessMatrix = zeros(NNodes,NNodes);
 MassMatrix = zeros(NNodes,NNodes);
-GlobalMatrix = zeros(NNodes,NNodes); % Combination of the two
+GlobalMatrix = zeros(NNodes); % Combination of the two
 GlobalVector = zeros(NNodes,1); 
 SourceVector = zeros(NNodes,1); % Source term is all 0s for laplacian eq. % Global vector
 
@@ -88,14 +86,16 @@ NBCnext = NBCcurrent;
 for idxt = 1 : NTsteps
     
     % Generic version within FOR loop %%%%%%%%
-    StiffnessMatrix = zeros(NNodes,NNodes);
-    MassMatrix = zeros(NNodes,NNodes);
-    GlobalMatrix = zeros(NNodes,NNodes); % Combination of the two
+    %StiffnessMatrix = zeros(NNodes);
+    %MassMatrix = zeros(NNodes);
+    StiffnessMatrix = zeros(NNodes);
+    MassMatrix = zeros(NNodes);
+    GlobalMatrix = zeros(NNodes); % Combination of the two
     GlobalVector = zeros(NNodes,1); 
     % Populate global stiffness matrix
-    StiffnessMatrix = GlobalStiffness(StiffnessMatrix,D,Lamda,Mesh);
+    StiffnessMatrix = GlobalStiffnessGQ(StiffnessMatrix,D,Lamda,Mesh);
     % Populate a global mass matrix 
-    MassMatrix = GlobalMass(MassMatrix,Mesh); %%%%%%%%
+    MassMatrix = GlobalMassGQ(MassMatrix,Mesh); %%%%%%%%
     
     % Combine into an overall global matrix - LHS
     %GlobalMatrix = GlobalMatrix + MassMatrix + theta*dt*StiffnessMatrix;
@@ -108,7 +108,7 @@ for idxt = 1 : NTsteps
     
     CombinedRHS = PrevSolution + SourceNew + SourceCurrent;   
     %Need to do in terms of time steps
-    Fcurrent = GlobalSource(SourceVector,Mesh);
+    Fcurrent = GlobalSourceGQ(SourceVector,Mesh);
     Fnext = Fcurrent; % Time invariant in this case
     %Fnext = Source vec at time n+1
 
@@ -172,6 +172,12 @@ TDomain = linspace(0,tmax,NTsteps);
 
 end
 
+% DESIRE TO FORM A structure of outputted C for analysis
+% Contains:
+% - Numerical solution at each node, time
+% - Analytical solution at each node, time
+% - e.g C.NumericalSoln gives C,xpos,tpos
+% - e.g.C.AnalyticalSoln.
 
 %{
 %Plot FEM solution

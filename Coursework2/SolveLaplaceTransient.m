@@ -19,7 +19,7 @@
 
 %The solution is plotted against a known analytical solution for:
 %SolveLaplaceTransient(1,-9,N,'DL',0,'DL',1) - Any positive integer N. 
-%E.g. SolveLaplaceTransient(1,-9,5,'DL',0,'DL',1,'CN')
+%E.g. SolveLaplaceTransient(1,-9,5,100,'DL',0,'DL',1,'CN')
 %
 %Note that the domain is currently hardcoded from x = 0 to x = 1
  
@@ -172,6 +172,12 @@ TDomain = linspace(0,tmax,NTsteps);
 
 end
 
+% DESIRE TO FORM A structure of outputted C for analysis
+% Contains:
+% - Numerical solution at each node, time
+% - Analytical solution at each node, time
+% - e.g C.NumericalSoln gives C,xpos,tpos
+% - e.g.C.AnalyticalSoln.
 
 %{
 %Plot FEM solution

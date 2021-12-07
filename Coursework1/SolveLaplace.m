@@ -30,7 +30,7 @@ Mesh = OneDimLinearMeshGen(xmin,xmax,NNodes-1); % Elements will also be N-1 ;
  
 GMatrix = zeros(NNodes,NNodes);
 SourceVector = zeros(NNodes,1); % Source term is all 0s for laplacian eq.
-SolutionVecto
+
 %Form local element matrices as struct
  
 for idx = 1: length(GMatrix) -1
