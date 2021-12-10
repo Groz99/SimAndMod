@@ -24,5 +24,5 @@
         end
     end
     %Scale with by the jacobian
-    LocalElementmatrix = LocalElementmatrix*J
+    LocalElementmatrix = LocalElementmatrix*J;
 end

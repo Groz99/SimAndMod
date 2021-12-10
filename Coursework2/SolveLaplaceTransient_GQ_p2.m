@@ -27,7 +27,7 @@ function [Cplot, Domain, TDomain] = SolveLaplaceTransient_GQ_p2(NElements,NTstep
  
 %Set domain
 xmin = 0;
-xmax = 1;
+xmax = 0.01;
  
 %Set time scheme
 %LET
@@ -62,7 +62,7 @@ Mesh = OneDimLinearMeshGenGQ(xmin,xmax,NElements); % Elements is N-1 ;
 %Size of global mesh effects local element values due to varying J scaling
 
 Mesh = EnhanceMeshData(Mesh,0,1); %DONT NEED THIS HERE.
-
+%Mesh.G(:) = 0
 StiffnessMatrix = zeros(NNodes,NNodes);
 MassMatrix = zeros(NNodes,NNodes);
 GlobalMatrix = zeros(NNodes); % Combination of the two
@@ -75,7 +75,7 @@ SolutionVector = zeros(NNodes,1); % Need to initialise a solution vector now
 Ccurrent = zeros(NNodes,1) + Tstart; %Define initial conditions here 
 Cnext = zeros(NNodes,1);   
 
-Fcurrent = zeros(NNodes,1); %Define initial conditions here % Use mesh to                             %Include the variation of this source term
+Fcurrent = zeros(NNodes,1); % Initialise source term
 Fnext = Fcurrent; %Stepping source term  
 
 NBCcurrent = zeros(NNodes,1);
@@ -105,7 +105,7 @@ for idxt = 1 : NTsteps
     GlobalMatrix = zeros(NNodes); % Combination of the two
     GlobalVector = zeros(NNodes,1); 
     % Populate global stiffness matrix
-    StiffnessMatrix = GlobalStiffnessGQ(StiffnessMatrix,D,Lamda,Mesh);
+    StiffnessMatrix = GlobalStiffnessGQ_p2(StiffnessMatrix,D,Lamda,Mesh);
     % Populate a global mass matrix 
     MassMatrix = GlobalMassGQ(MassMatrix,Mesh); %%%%%%%%
     
@@ -121,6 +121,7 @@ for idxt = 1 : NTsteps
     CombinedRHS = PrevSolution + SourceNew + SourceCurrent;   
     %Need to do in terms of time steps
     Fcurrent = GlobalSourceGQ_p2(SourceVector,Mesh);
+    %Fcurrent = zeros(NNodes,1);
     Fnext = Fcurrent; % Time invariant in this case
     %Fnext = Source vec at time n+1
 
@@ -181,7 +182,10 @@ end
 
 Domain = linspace(xmin,xmax,NNodes);
 TDomain = linspace(0,tmax,NTsteps); 
-
+figure
+plot(Domain,Cplot)
+figure
+plot(TDomain,Cplot)
 end
 
 % DESIRE TO FORM A structure of outputted C for analysis

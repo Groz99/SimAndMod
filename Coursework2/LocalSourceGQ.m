@@ -1,8 +1,8 @@
-function localsource = LocalSourceGQ(eID,Mesh)
+function localsource = LocalSourceGQ(eID,msh)
 
-NElements = Mesh.ne;
-NNodes = Mesh.ngn;
-localsource = zeros(3);
-F = (Mesh.rhob(eID) * Mesh.cb(eID) * msh.G(eID))/(msh.rho(eID)*msh.cp(eID)*msh.Tb(eID));
-J = Mesh.elem(eID).J;
-localsource(:) = FJ;
+NElements = msh.ne;
+NNodes = msh.ngn;
+localsource = zeros(3,1);
+F = (msh.rhob(eID) * msh.cb(eID) * msh.G(eID))/(msh.rho(eID)*msh.c(eID)) * msh.Tb(eID);
+J = msh.elem(eID).J;
+localsource(:) = F*J;
