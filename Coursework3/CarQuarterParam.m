@@ -31,9 +31,9 @@ I = 600;
 a = 1.25;
 
 b = 1.4;
-a = b ; %Equal to COM for debug
+%a = b ; %Equal to COM for debug
 
 %Road 
 Lamda = 1;
-speedmph = 5;
+speedmph = 70;
 speed = speedmph * 1000 * (1.609/3600);
